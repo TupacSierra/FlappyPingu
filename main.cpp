@@ -18,18 +18,31 @@ int main(void)
 
     Vector2 tubePosition = { tube.x,tube.y };
 
+
     const float speed = 250.0f;
+
+
+    const float gravity = 500.0f;
+    const float jumpSpeed = 200.0f;
+
+   
+    float ballVelocityY = 0.0f;
 
     bool collided = false;
 
-
     while (!WindowShouldClose())    
     {
-      
-      
-        if (IsKeyDown(KEY_UP)) ballPosition.y -= 120.0f * GetFrameTime();
-        if (IsKeyDown(KEY_DOWN)) ballPosition.y += 120.0f * GetFrameTime();
-       
+     
+        const float deltaTime = GetFrameTime();
+
+        if (IsKeyPressed(KEY_SPACE) && ballPosition.y > ballRadius)
+        {
+            ballVelocityY = -jumpSpeed;
+        }
+
+        ballPosition.y += ballVelocityY * deltaTime;
+        ballVelocityY += gravity * deltaTime;
+        
 
         tube.x -= speed * GetFrameTime();
 
@@ -41,16 +54,17 @@ int main(void)
 
         }
 
+
         collided = CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, tube);
        
-       
+
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
 
-        DrawText("version 0.1 flappypingu", 10, 430, 10, DARKGRAY);
+        DrawText("Version 0.1 Flappy_Pingu", 10, 435, 15,BLACK);
 
-        DrawCircleV(ballPosition, 50, MAROON);
+        DrawCircleV(ballPosition, ballRadius, MAROON);
 
         DrawRectangleRec(tube, BLUE);
 
@@ -58,7 +72,7 @@ int main(void)
 
         if (collided)
         {
-            DrawText("You lose", 10, 10, 20, RED);
+            DrawText("You lose", 10, 10, 35, RED);
         }
 
         EndDrawing();
