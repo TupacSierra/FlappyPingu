@@ -10,19 +10,15 @@ int main(void)
     Vector2 ballPosition = { (float)screenWidth - 700 , (float)screenHeight / 2 };
     const float ballRadius = 50.0f;
 
-    Rectangle tube;
-    tube.x = static_cast<float> (GetScreenWidth());
-    tube.y = static_cast<float>(GetScreenHeight()) / 2 - 25;
-    tube.width = 75;
-    tube.height = 200;
-
-    Vector2 tubePosition = { tube.x,tube.y };
+    Rectangle upperTube{ (float)screenWidth,0.0f ,75.0f ,0.0f};
+    Rectangle lowerTube{ (float)screenWidth ,0.0f ,75.0f ,0.0f };
 
 
-    const float speed = 250.0f;
+    upperTube.width = lowerTube.width = 95;
 
 
-    const float gravity = 500.0f;
+    const float tubeSpeed = 400.0f;
+    const float gravity = 650.0f;
     const float jumpSpeed = 200.0f;
 
    
@@ -43,19 +39,24 @@ int main(void)
         ballPosition.y += ballVelocityY * deltaTime;
         ballVelocityY += gravity * deltaTime;
         
+        upperTube.x = lowerTube.x -= tubeSpeed * deltaTime;
 
-        tube.x -= speed * GetFrameTime();
 
-        if (tube.x + tube.width < 0)
+        if (upperTube.x + upperTube.width < 0)
         {
 
-            tube.x = static_cast<float>(GetScreenWidth());
-            tube.y = static_cast<float>(GetRandomValue(0, GetScreenHeight() - 50));
+            upperTube.x = lowerTube.x = static_cast <float>(GetScreenWidth());
+            float tubePosition = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
+            float gapHeight = 75.0f;
+            float tubeHeight = static_cast<float>(GetScreenHeight()) - tubePosition + gapHeight;
+            upperTube.height = tubePosition - gapHeight;
+            lowerTube.y = tubePosition + gapHeight;
+            lowerTube.height = tubeHeight;
 
         }
 
-
-        collided = CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, tube);
+        collided = CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, upperTube) ||
+                   CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, lowerTube);
        
 
         BeginDrawing();
@@ -66,7 +67,9 @@ int main(void)
 
         DrawCircleV(ballPosition, ballRadius, MAROON);
 
-        DrawRectangleRec(tube, BLUE);
+        DrawRectangleRec(upperTube, BLUE);
+        DrawRectangleRec(lowerTube, BLUE);
+
 
         DrawText("DONT TOUCH THE BLUE RECTAGLE", screenWidth / 2, 10, 20, BLACK);
 
