@@ -51,8 +51,10 @@ int main(void)
     while (!WindowShouldClose())    
     {
      
+
         const float deltaTime = GetFrameTime();
 
+        
         if (IsKeyPressed(KEY_SPACE) && ballPosition.y > ballRadius)
         {
             ballVelocityY = -jumpSpeed;
@@ -63,6 +65,7 @@ int main(void)
         
         upperTube1.x = lowerTube1.x -= tubeSpeed * deltaTime;
         upperTube2.x = lowerTube2.x -= tubeSpeed * deltaTime;
+
 
 
         if (upperTube2.x + upperTube2.width <= 0)
@@ -123,8 +126,8 @@ int main(void)
         DrawTextureEx(background2, { scrollingBack2 , 20 }, 0.0f, 2.0f, WHITE);
         DrawTextureEx(background2, { background2.width * 2 + scrollingBack2, 20 }, 0.0f, 2.0f, WHITE);
        
-       DrawTextureEx(background3, { scrollingBack3 , 20 }, 0.0f, 2.0f, WHITE);
-       DrawTextureEx(background3, { background3.width * 2 + scrollingBack3, 20 }, 0.0f, 2.0f, WHITE);
+        DrawTextureEx(background3, { scrollingBack3 , 20 }, 0.0f, 2.0f, WHITE);
+        DrawTextureEx(background3, { background3.width * 2 + scrollingBack3, 20 }, 0.0f, 2.0f, WHITE);
 
         DrawTextureEx(midground,  { scrollingMid, 40 }, 0.0f, 2.0f, WHITE);
         DrawTextureEx(midground, { midground.width * 2 + scrollingMid, 40 }, 0.0f, 2.0f, WHITE);
@@ -142,13 +145,13 @@ int main(void)
         DrawRectangleRec(lowerTube2, BLUE);
 
         DrawTextureEx(foreground, { scrollingFore, 50 }, 0.0f, 2.0f, WHITE);
-        DrawTextureEx(foreground, { foreground.width * 2 + scrollingFore, 50 }, 0.0f, 2.0f, WHITE);
+        DrawTextureEx(foreground, { foreground.width * 2 + scrollingFore, 50 }, 0.0f, 2.0f, WHITE); 
 
 
         DrawText("Version 0.1 Flappy_Pingu", 10, 435, 15,BLACK);
      
    
-        DrawText("DONT TOUCH THE BLUE RECTAGLE", screenWidth / 2, 10, 20, BLACK);
+        DrawText("DONT TOUCH THE BLUE RECTAGLE", screenWidth / 2, 10, 10, WHITE);
 
         if (collided)
         {
