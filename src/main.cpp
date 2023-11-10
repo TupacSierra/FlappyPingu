@@ -28,12 +28,17 @@ int main(void)
     Vector2 ballPosition = { (float)screenWidth - 600 , (float)screenHeight / 2 };
     const float ballRadius = 40.0f;
 
-    Rectangle upperTube{ (float)screenWidth,0.0f ,75.0f ,0.0f};
-    Rectangle lowerTube{ (float)screenWidth ,0.0f ,75.0f ,0.0f };
+    Rectangle upperTube1{ (float)screenWidth,0.0f ,75.0f ,0.0f};
+    Rectangle lowerTube1{ (float)screenWidth ,0.0f ,75.0f ,0.0f };
 
-    upperTube.width = lowerTube.width = 95;
+    Rectangle upperTube2{ (float)screenWidth + screenWidth / 2 ,0.0f ,75.0f ,0.0f }; 
+    Rectangle lowerTube2{ (float)screenWidth + screenWidth / 2 ,0.0f ,75.0f ,0.0f };
 
-    const float tubeSpeed = 400.0f;
+    upperTube1.width = lowerTube1.width = upperTube2.width = lowerTube2.width = 95;
+   
+
+
+    const float tubeSpeed = 400.0f;  
 
     const float gravity = 650.0f;
     const float jumpSpeed = 200.0f;
@@ -56,29 +61,41 @@ int main(void)
         ballPosition.y += ballVelocityY * deltaTime;
         ballVelocityY += gravity * deltaTime;
         
-        upperTube.x = lowerTube.x -= tubeSpeed * deltaTime;
+        upperTube1.x = lowerTube1.x -= tubeSpeed * deltaTime;
+        upperTube2.x = lowerTube2.x -= tubeSpeed * deltaTime;
 
 
-        if (upperTube.x + upperTube.width < 0)
+        if (upperTube2.x + upperTube2.width <= 0)
         {
 
-            upperTube.x = lowerTube.x = static_cast <float>(GetScreenWidth());
+            upperTube2.x = lowerTube2.x = static_cast <float>(GetScreenWidth());
             float tubePosition = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
-            float gapHeight = 60.0f;
+            float gapHeight = static_cast<float>(GetRandomValue(60, 70));
             float tubeHeight = static_cast<float>(GetScreenHeight()) - tubePosition + gapHeight;
-            upperTube.height = tubePosition - gapHeight;
-            lowerTube.y = tubePosition + gapHeight;
-            lowerTube.height = tubeHeight;
+            upperTube2.height = tubePosition - gapHeight;
+            lowerTube2.y = tubePosition + gapHeight;
+            lowerTube2.height = tubeHeight;
     
         }
 
+        if (upperTube1.x + upperTube1.width <= 0)
+        {
 
-        collided = CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, upperTube) ||
-                   CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, lowerTube);
-      
+            upperTube1.x = lowerTube1.x = static_cast <float>(GetScreenWidth());
+            float tubePosition = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
+            float gapHeight = static_cast<float>(GetRandomValue(60, 70));
+            float tubeHeight = static_cast<float>(GetScreenHeight()) - tubePosition + gapHeight;
+            upperTube1.height = tubePosition - gapHeight;
+            lowerTube1.y = tubePosition + gapHeight;
+            lowerTube1.height = tubeHeight;
 
+        }
 
-   
+        collided = CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, upperTube1) ||
+                   CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, lowerTube1) ||
+                   CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, upperTube2) ||
+                   CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, lowerTube2) ;
+
 
         scrollingBack -= 0.1f * deltaTime;
         scrollingBack2 -= 20.0f * deltaTime;
@@ -93,7 +110,6 @@ int main(void)
         if (scrollingMid <= -midground.width * 2) scrollingMid = 0;
         if (scrollingMid2 <= -midground2.width * 2) scrollingMid2 = 0;
         if (scrollingFore <= -foreground.width * 2) scrollingFore = 0;
-
 
 
 
@@ -119,8 +135,11 @@ int main(void)
 
         DrawCircleV(ballPosition, ballRadius, MAROON);
 
-        DrawRectangleRec(upperTube, BLUE);
-        DrawRectangleRec(lowerTube, BLUE);
+        DrawRectangleRec(upperTube1, BLUE);
+        DrawRectangleRec(lowerTube1, BLUE);
+
+        DrawRectangleRec(upperTube2, BLUE);
+        DrawRectangleRec(lowerTube2, BLUE);
 
         DrawTextureEx(foreground, { scrollingFore, 50 }, 0.0f, 2.0f, WHITE);
         DrawTextureEx(foreground, { foreground.width * 2 + scrollingFore, 50 }, 0.0f, 2.0f, WHITE);
