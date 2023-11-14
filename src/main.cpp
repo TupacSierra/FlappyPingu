@@ -5,7 +5,8 @@ enum GameState {
     PLAY,
     CREDITS,
     EXIT,
-    GAME_OVER
+    GAME_OVER,
+    HOW_TO_PLAY
 };
 
 
@@ -65,12 +66,21 @@ int main(void)
             else if (IsKeyPressed(KEY_C)) {
                 gameState = CREDITS;
             }
+            else if (IsKeyPressed(KEY_H)) {
+                gameState = HOW_TO_PLAY;
+            }
             else if (IsKeyPressed(KEY_ESCAPE)) {
                 gameState = EXIT;
             }
             break;
 
-    
+        case HOW_TO_PLAY:
+
+            if (IsKeyPressed(KEY_B)) {
+                gameState = MENU;
+            }
+            break;
+
         case PLAY:
 
           
@@ -155,6 +165,8 @@ int main(void)
                 gameState = PLAY;
             }
             break;
+
+       
         }
 
         scrollingBack -= 0.1f * GetFrameTime();
@@ -207,7 +219,8 @@ int main(void)
         case MENU:
             DrawText("Press P to Play", screenWidth / 2 - 70, screenHeight / 2 - 20, 20, WHITE);
             DrawText("Press C for Credits", screenWidth / 2 - 90, screenHeight / 2 + 20, 20, WHITE);
-            DrawText("Press ESC to Exit", screenWidth / 2 - 80, screenHeight / 2 + 60, 20, WHITE);
+            DrawText("Press H for How To Play", screenWidth / 2 - 110, screenHeight / 2 + 60, 20, WHITE);
+            DrawText("Press ESC to Exit", screenWidth / 2 - 80, screenHeight / 2 + 100, 20, WHITE);
 
             DrawText("Version 0.2 Flappy_Pingu", 10, 435, 15, BLACK);
 
@@ -219,11 +232,18 @@ int main(void)
             break;
 
         case CREDITS:
-            DrawText("Game Code by Tupac Sierra", screenWidth / 2 - 70, screenHeight / 2 - 20, 20, WHITE);
-            DrawText("Art background by @vnitti_art ", screenWidth / 2 - 90, screenHeight / 2 + 20, 20, WHITE);
-            DrawText("Press B to go back menu", screenWidth / 2 - 60, screenHeight / 2 + 60, 20, WHITE);
+            DrawText("Game Code by Tupac Sierra", screenWidth / 2 - 100, screenHeight / 2 - 20, 20, WHITE);
+            DrawText( "Art background by @vnitti_art ", screenWidth / 2 - 125, screenHeight / 2 + 20, 20, WHITE);
+            DrawText("Press B to go back to the main menu.", screenWidth / 2 - 160, screenHeight / 2 + 60, 20, WHITE);
             break;
 
+        case HOW_TO_PLAY:
+            DrawText("How To Play", screenWidth / 2 - 70, screenHeight / 2 - 80, 30, WHITE);
+            DrawText("Press SPACE to make the penguin fly", screenWidth / 2 - 150, screenHeight / 2 - 20, 20, WHITE);
+            DrawText("Avoid the pipes and try to stay alive!", screenWidth / 2 - 150, screenHeight / 2 + 20, 20, WHITE);
+            DrawText("Press B to go back to the main menu.", screenWidth / 2 - 150, screenHeight / 2 + 60, 20, WHITE);
+   
+            break;
         case EXIT:
 
             break;
@@ -235,6 +255,8 @@ int main(void)
              DrawText("Press R to replay", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, WHITE); 
 
              break;
+
+
              }
         
 
