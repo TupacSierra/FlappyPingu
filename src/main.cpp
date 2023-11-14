@@ -1,30 +1,59 @@
 #include "raylib.h"
 
-enum GameState {
-    MENU,
-    PLAY,
-    CREDITS,
-    EXIT,
-    GAME_OVER,
-    HOW_TO_PLAY
-};
 
 
+
+const int screenWidth = 750;
+const int screenHeight = 450;
+
+
+const char* backgroundPath = "res/layers/sky.png";
+const char* background2Path = "res/layers/cloud_lonely.png";
+const char* background3Path = "res/layers/clouds_bg.png";
+const char* midgroundPath = "res/layers/glacial_mountains_lightened.png";
+const char* midground2Path = "res/layers/clouds_mg_2.png";
+const char* foregroundPath = "res/layers/clouds_mg_1_lightened.png";
+
+
+const float scrollingBackSpeed = 0.1f;
+const float scrollingBack2Speed = 20.0f;
+const float scrollingBack3Speed = 35.0f;
+const float scrollingMidSpeed = 70.0f;
+const float scrollingMid2Speed = 85.0f;
+const float scrollingForeSpeed = 130.0f;
+
+
+const float gravity = 650.0f;
+const float jumpSpeed = 200.0f;
+const float tubeSpeed = 400.0f;
+
+
+const float tubeWidth = 95.0f;
+const float gapHeightMin = 60.0f;
+const float gapHeightMax = 70.0f;
+
+
+const float ballRadius = 40.0f;
+const Vector2 initialBallPosition = { (float)screenWidth - 600, (float)screenHeight / 2 };
+
+
+const int tubeSpawnDistance = screenWidth / 2;
+
+void ResetGame(Vector2& ballPosition, float& ballVelocityY, Rectangle& upperTube, Rectangle& lowerTube);
 
 int main(void)
 {
-    const int screenWidth = 750;
-    const int screenHeight = 450;
-
     InitWindow(screenWidth, screenHeight, "FlappyPingu");
 
-    Texture2D background = LoadTexture("res/layers/sky.png");
-    Texture2D background2 = LoadTexture("res/layers/cloud_lonely.png");
-    Texture2D background3 = LoadTexture("res/layers/clouds_bg.png");
-    Texture2D midground = LoadTexture("res/layers/glacial_mountains_lightened.png");
-    Texture2D midground2 = LoadTexture("res/layers/clouds_mg_2.png");
-    Texture2D foreground = LoadTexture("res/layers/clouds_mg_1_lightened.png");
 
+    Texture2D background = LoadTexture(backgroundPath);
+    Texture2D background2 = LoadTexture(background2Path);
+    Texture2D background3 = LoadTexture(background3Path);
+    Texture2D midground = LoadTexture(midgroundPath);
+    Texture2D midground2 = LoadTexture(midground2Path);
+    Texture2D foreground = LoadTexture(foregroundPath);
+
+  
     float scrollingBack = 0.0f;
     float scrollingBack2 = 0.0f;
     float scrollingBack3 = 0.0f;
@@ -32,31 +61,39 @@ int main(void)
     float scrollingMid2 = 0.0f;
     float scrollingFore = 0.0f;
 
-    Vector2 ballPosition = { (float)screenWidth - 600 , (float)screenHeight / 2 };
-    const float ballRadius = 40.0f;
-
-    Rectangle upperTube1 = { (float)screenWidth, 0.0f, 95.0f, 0.0f };
-    Rectangle lowerTube1 = { (float)screenWidth, 0.0f, 95.0f, 0.0f };
-
-    Rectangle upperTube2 = { (float)screenWidth + screenWidth / 2, 0.0f, 95.0f, 0.0f };
-    Rectangle lowerTube2 = { (float)screenWidth + screenWidth / 2, 0.0f, 95.0f, 0.0f };
-
-    upperTube1.width = lowerTube1.width = upperTube2.width = lowerTube2.width = 95;
-
-    const float tubeSpeed = 400.0f;
-    const float gravity = 650.0f;
-    const float jumpSpeed = 200.0f;
-
+ 
+    Vector2 ballPosition = initialBallPosition;
     float ballVelocityY = 0.0f;
+
+    Rectangle upperTube1 = { (float)screenWidth, 0.0f, tubeWidth, 0.0f };
+    Rectangle lowerTube1 = { (float)screenWidth, 0.0f, tubeWidth, 0.0f };
+
+    Rectangle upperTube2 = { (float)screenWidth + tubeSpawnDistance, 0.0f, tubeWidth, 0.0f };
+    Rectangle lowerTube2 = { (float)screenWidth + tubeSpawnDistance, 0.0f, tubeWidth, 0.0f };
+
+
+    upperTube1.width = lowerTube1.width = upperTube2.width = lowerTube2.width = tubeWidth;
+
 
     bool collided = false;
 
-   
+  
+    enum GameState {
+        MENU,
+        PLAY,
+        CREDITS,
+        EXIT,
+        GAME_OVER,
+        HOW_TO_PLAY
+    };
 
     GameState gameState = MENU;
 
     while (!WindowShouldClose())
     {
+
+
+
         switch (gameState)
         {
         case MENU:
@@ -169,13 +206,14 @@ int main(void)
        
         }
 
-        scrollingBack -= 0.1f * GetFrameTime();
-        scrollingBack2 -= 20.0f * GetFrameTime();
-        scrollingBack3 -= 35.0f * GetFrameTime();
-        scrollingMid -= 70.0f * GetFrameTime();
-        scrollingMid2 -= 85.0f * GetFrameTime();
-        scrollingFore -= 130.0f * GetFrameTime();
+        scrollingBack -= scrollingBackSpeed * GetFrameTime();
+        scrollingBack2 -= scrollingBack2Speed * GetFrameTime();
+        scrollingBack3 -= scrollingBack3Speed * GetFrameTime();
+        scrollingMid -= scrollingMidSpeed * GetFrameTime();
+        scrollingMid2 -= scrollingMid2Speed * GetFrameTime();
+        scrollingFore -= scrollingForeSpeed * GetFrameTime();
 
+     
         if (scrollingBack <= -background.width * 2) scrollingBack = 0;
         if (scrollingBack2 <= -background2.width * 2) scrollingBack2 = 0;
         if (scrollingBack3 <= -background3.width * 2) scrollingBack3 = 0;
@@ -271,4 +309,14 @@ int main(void)
     CloseWindow();
 
     return 0;
+}
+
+void ResetGame(Vector2& ballPosition, float& ballVelocityY, Rectangle& upperTube, Rectangle& lowerTube, bool& collided)
+{
+    ballPosition = initialBallPosition;
+    ballVelocityY = 0.0f;
+    collided = false;
+
+    upperTube.x = lowerTube.x = static_cast<float>(GetScreenWidth());
+    upperTube.height = lowerTube.height = 0.0f;
 }
