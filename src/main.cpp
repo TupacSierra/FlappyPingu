@@ -4,8 +4,11 @@ enum GameState {
     MENU,
     PLAY,
     CREDITS,
-    EXIT
+    EXIT,
+    GAME_OVER
 };
+
+
 
 int main(void)
 {
@@ -47,6 +50,8 @@ int main(void)
 
     bool collided = false;
 
+   
+
     GameState gameState = MENU;
 
     while (!WindowShouldClose())
@@ -65,7 +70,14 @@ int main(void)
             }
             break;
 
+    
         case PLAY:
+
+          
+            if (ballPosition.y > screenHeight || collided) {
+                gameState = GAME_OVER;
+            }
+
             if (IsKeyPressed(KEY_SPACE) && ballPosition.y > ballRadius) {
                 ballVelocityY = -jumpSpeed;
             }
@@ -77,7 +89,6 @@ int main(void)
             upperTube2.x = lowerTube2.x -= tubeSpeed * GetFrameTime();
 
             if (upperTube2.x + upperTube2.width <= 0) {
-             
                 upperTube2.x = lowerTube2.x = static_cast<float>(GetScreenWidth());
                 float tubePosition = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
                 float gapHeight = static_cast<float>(GetRandomValue(60, 70));
@@ -85,10 +96,10 @@ int main(void)
                 upperTube2.height = tubePosition - gapHeight;
                 lowerTube2.y = tubePosition + gapHeight;
                 lowerTube2.height = tubeHeight;
+
             }
 
             if (upperTube1.x + upperTube1.width <= 0) {
-              
                 upperTube1.x = lowerTube1.x = static_cast<float>(GetScreenWidth());
                 float tubePosition = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
                 float gapHeight = static_cast<float>(GetRandomValue(60, 70));
@@ -102,20 +113,47 @@ int main(void)
                 CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, lowerTube1) ||
                 CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, upperTube2) ||
                 CheckCollisionCircleRec(Vector2{ ballPosition.x, ballPosition.y }, ballRadius, lowerTube2);
+
             break;
 
         case CREDITS:
-            DrawText("Game Code by Tupac Sierra", screenWidth / 2 - 70, screenHeight / 2 - 20, 20, WHITE);
-            DrawText("Art background by @vnitti_art ", screenWidth / 2 - 90, screenHeight / 2 + 20, 20, WHITE);
-            DrawText("Press B to go back to the menu", screenWidth / 2 - 60, screenHeight / 2 + 60, 20, WHITE);
 
             if (IsKeyPressed(KEY_B)) {
                 gameState = MENU;
             }
             break;
 
-        case EXIT:
-            CloseWindow();
+        
+        case GAME_OVER:
+            if (IsKeyDown(KEY_R))
+            {
+               
+                ballPosition = { (float)screenWidth - 600, (float)screenHeight / 2 };
+                ballVelocityY = 0.0f;
+                collided = false;
+
+              
+                upperTube1.x = lowerTube1.x = static_cast<float>(GetScreenWidth());
+                upperTube2.x = lowerTube2.x = static_cast<float>(GetScreenWidth()) + screenWidth / 2;
+
+                float tubePosition1 = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
+                float gapHeight1 = static_cast<float>(GetRandomValue(60, 70));
+                float tubeHeight1 = static_cast<float>(GetScreenHeight()) - tubePosition1 + gapHeight1;
+                upperTube1.height = tubePosition1 - gapHeight1;
+                lowerTube1.y = tubePosition1 + gapHeight1;
+                lowerTube1.height = tubeHeight1;
+
+                float tubePosition2 = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
+                float gapHeight2 = static_cast<float>(GetRandomValue(60, 70));
+                float tubeHeight2 = static_cast<float>(GetScreenHeight()) - tubePosition2 + gapHeight2;
+                upperTube2.height = tubePosition2 - gapHeight2;
+                lowerTube2.y = tubePosition2 + gapHeight2;
+                lowerTube2.height = tubeHeight2;
+
+                scrollingBack = scrollingBack2 = scrollingBack3 = scrollingMid = scrollingMid2 = scrollingFore = 0.0f;
+
+                gameState = PLAY;
+            }
             break;
         }
 
@@ -177,7 +215,7 @@ int main(void)
             break;
 
         case PLAY:
-           
+
             break;
 
         case CREDITS:
@@ -187,19 +225,23 @@ int main(void)
             break;
 
         case EXIT:
-            
-            break;
-        }
 
-        if (collided)
-        {
-            DrawText("You lose", 10, 10, 35, RED);
-        }
+            break;
+        
+         case GAME_OVER:
+             ClearBackground(GetColor(0x052c46ff));
+
+             DrawText("You lose", screenWidth / 2 - 80, screenHeight / 2 - 20, 35, RED);
+             DrawText("Press R to replay", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, WHITE); 
+
+             break;
+             }
+        
 
         EndDrawing();
     }
 
-   
+
     UnloadTexture(background);
     UnloadTexture(midground);
     UnloadTexture(foreground);
