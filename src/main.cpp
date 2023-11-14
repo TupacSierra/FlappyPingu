@@ -1,8 +1,5 @@
 #include "raylib.h"
 
-
-
-
 const int screenWidth = 750;
 const int screenHeight = 450;
 
@@ -22,20 +19,16 @@ const float scrollingMidSpeed = 70.0f;
 const float scrollingMid2Speed = 85.0f;
 const float scrollingForeSpeed = 130.0f;
 
-
 const float gravity = 650.0f;
 const float jumpSpeed = 200.0f;
 const float tubeSpeed = 400.0f;
 
-
 const float tubeWidth = 95.0f;
-const float gapHeightMin = 60.0f;
-const float gapHeightMax = 70.0f;
-
+const float minGapHeight = 60.0f;
+const float maxGapHeight = 70.0f;
 
 const float ballRadius = 40.0f;
 const Vector2 initialBallPosition = { (float)screenWidth - 600, (float)screenHeight / 2 };
-
 
 const int tubeSpawnDistance = screenWidth / 2;
 
@@ -91,7 +84,6 @@ int main(void)
 
     while (!WindowShouldClose())
     {
-
 
 
         switch (gameState)
@@ -172,6 +164,7 @@ int main(void)
 
         
         case GAME_OVER:
+
             if (IsKeyDown(KEY_R))
             {
                
@@ -200,6 +193,36 @@ int main(void)
                 scrollingBack = scrollingBack2 = scrollingBack3 = scrollingMid = scrollingMid2 = scrollingFore = 0.0f;
 
                 gameState = PLAY;
+            }
+
+            if (IsKeyDown(KEY_B)) {
+               
+                gameState = MENU;
+
+             
+                scrollingBack = scrollingBack2 = scrollingBack3 = scrollingMid = scrollingMid2 = scrollingFore = 0.0f;
+
+                ballPosition = { (float)screenWidth - 600, (float)screenHeight / 2 };
+                ballVelocityY = 0.0f;
+                collided = false;
+
+
+                upperTube1.x = lowerTube1.x = static_cast<float>(GetScreenWidth());
+                upperTube2.x = lowerTube2.x = static_cast<float>(GetScreenWidth()) + screenWidth / 2;
+
+                float tubePosition1 = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
+                float gapHeight1 = static_cast<float>(GetRandomValue(60, 70));
+                float tubeHeight1 = static_cast<float>(GetScreenHeight()) - tubePosition1 + gapHeight1;
+                upperTube1.height = tubePosition1 - gapHeight1;
+                lowerTube1.y = tubePosition1 + gapHeight1;
+                lowerTube1.height = tubeHeight1;
+
+                float tubePosition2 = static_cast<float>(GetRandomValue(150, GetScreenHeight() - 200));
+                float gapHeight2 = static_cast<float>(GetRandomValue(60, 70));
+                float tubeHeight2 = static_cast<float>(GetScreenHeight()) - tubePosition2 + gapHeight2;
+                upperTube2.height = tubePosition2 - gapHeight2;
+                lowerTube2.y = tubePosition2 + gapHeight2;
+                lowerTube2.height = tubeHeight2;
             }
             break;
 
@@ -291,6 +314,7 @@ int main(void)
 
              DrawText("You lose", screenWidth / 2 - 80, screenHeight / 2 - 20, 35, RED);
              DrawText("Press R to replay", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, WHITE); 
+             DrawText("Press B to go back to the menu", screenWidth / 2 - 160, screenHeight / 2 + 60, 20, WHITE);
 
              break;
 
