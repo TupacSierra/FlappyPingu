@@ -89,8 +89,7 @@
       <AdditionalDependencies>raylib.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>"$(SolutionDir)\utils\config.bat"
-"$(SolutionDir)\utils\xcopy.bat" "$(TargetDir)" "$(SolutionDir)res" "$(SolutionDir)$(Configuration)/res"
+      <Command>"$(SolutionDir)\utils\xcopy.bat" "$(TargetDir)" "$(SolutionDir)res" "$(SolutionDir)$(Configuration)/res"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
